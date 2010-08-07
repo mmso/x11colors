@@ -33,8 +33,6 @@ static void usage(void) {
 	"  -d displace\t: vertical box displace (default: %d)\n"
 	"\n"
 	, DEFAULT_FONT, TEXT_OFFSET, BOX_WIDTH, BOX_HEIGHT, DISPLACE);
-
-	exit(0);
 }
 
 int main(int argc, char* argv[]) {
@@ -43,16 +41,17 @@ int main(int argc, char* argv[]) {
 
 	bzero((struct config *)&cfg, sizeof(struct config));
 
-	while ((ch = getopt(argc, argv, "f:x:W:H:d:h")) != -1) {
+	while ((ch = getopt(argc, argv, "?hf:x:W:H:d:")) != -1) {
 		switch (ch) {
+			case '?': 
+			case 'h': usage(); exit(0);
 			case 'f': sscanf(optarg, "%s", cfg.fontname); break;
 			case 'x': sscanf(optarg, "%d", &cfg.textx); break;
 			case 'W': sscanf(optarg, "%u", &cfg.rectanglew); break;
 			case 'H': sscanf(optarg, "%u", &cfg.rectangleh); break;
 			case 'd': sscanf(optarg, "%d", &cfg.displace); break; 
-			case 'h': usage();
 		}
-    }
+	}
 
 	init_config(&cfg);
 	init_x11colors(&cfg);
