@@ -60,10 +60,12 @@ struct config {
 	unsigned int width,height;
 
 	int textx,texty;
+	unsigned int textcoloroffset;
 	int rectanglex,rectangley;
 	unsigned int rectanglew,rectangleh;
 
 	int displace;
+
 };
 
 void render(struct window *, struct display *, struct config *);

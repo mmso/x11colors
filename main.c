@@ -22,14 +22,15 @@ void init_config(struct config *cfg) {
 
 static void usage(void) {
 	fprintf(stderr,
-	"Usage:  [-?h] [-f fontstring] [-x textoffset] [-W box-width] [-H box-height] [-d displace]\n"
+	"Usage:  [-?hc] [-f fontstring] [-x textoffset] [-W box-width] [-H box-height] [-d displace]\n"
 	"\n"
 	"Options:\n"
 	"  -?,-h\t\t: this help\n"
+	"  -c\t\t: draw text with background or foregrund color (default: off)\n"
 	"  -f fontstring\t: xft fontstring (default: %s)\n"
 	"  -x textoffset\t: horizontal text offset (default: %d)\n"
-	"  -W box-width\t: height of colorbox (default: %d)\n"
-	"  -H box-width\t: width of colorbox (default: %d)\n"
+	"  -W box-width\t: height of colorbox (default: %u)\n"
+	"  -H box-width\t: width of colorbox (default: %u)\n"
 	"  -d displace\t: vertical box displace (default: %d)\n"
 	"\n"
 	, DEFAULT_FONT, TEXT_OFFSET, BOX_WIDTH, BOX_HEIGHT, DISPLACE);
@@ -41,10 +42,11 @@ int main(int argc, char* argv[]) {
 
 	bzero((struct config *)&cfg, sizeof(struct config));
 
-	while ((ch = getopt(argc, argv, "?hf:x:W:H:d:")) != -1) {
+	while ((ch = getopt(argc, argv, "?hcf:x:W:H:d:")) != -1) {
 		switch (ch) {
 			case '?': 
 			case 'h': usage(); exit(0);
+			case 'c': cfg.textcoloroffset = 8; break;
 			case 'f': sscanf(optarg, "%s", cfg.fontname); break;
 			case 'x': sscanf(optarg, "%d", &cfg.textx); break;
 			case 'W': sscanf(optarg, "%u", &cfg.rectanglew); break;

@@ -42,7 +42,7 @@ void drawcolors(struct window *win, struct config *cfg) {
 
 	for(int i=0,y=cfg->rectangley; i<COLOR_AMOUNT/2; i++) {
 		ty = y + cfg->rectangleh - fh/2 + fa;
-		XftDrawStringUtf8(win->xftdraw, &win->xftcolors[i], win->xftfont, tx, ty, (const XftChar8*) colors[i], strlen(colors[i]));
+		XftDrawStringUtf8(win->xftdraw, &win->xftcolors[i+cfg->textcoloroffset], win->xftfont, tx, ty, (const XftChar8*) colors[i], strlen(colors[i]));
 
 		for(int d=0; d<=8; d+=8) {
 			XftDrawRect(win->xftdraw, &win->xftcolors[i+d], cfg->rectanglex, y, cfg->rectanglew, cfg->rectangleh);

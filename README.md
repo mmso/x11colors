@@ -9,6 +9,7 @@ Help
 
 	Options:
 	  -?,-h		: this help
+	  -c		: draw text with background or foregrund color (default: off)
 	  -f fontstring	: xft fontstring (default: nu:pixelsize=11)
 	  -x textoffset	: horizontal text offset (default: 0)
 	  -W box-width	: height of colorbox (default: 80)
