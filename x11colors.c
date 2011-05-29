@@ -71,7 +71,7 @@ void keypress(XEvent *e, struct window *win, struct display *in, struct config *
 			break;
 		case XK_u:
 			fprintf(stderr, "refreshing xcolors\n");
-			init_xdefaults(cfg);
+			init_xdefaults(in, cfg);
 			init_colors(win, in, cfg);
 			render(win, in, cfg);
 			break;
@@ -110,17 +110,13 @@ void init_colors(struct window *win, struct display *in, struct config *cfg) {
 	}
 }
 
-void init_xdefaults(struct config *cfg) {
-	char filename[256];
+void init_xdefaults(struct display *in, struct config *cfg) {
 	char *type[16];
 	char buffer[8];
 	XrmDatabase rdb;
 	XrmValue value;
 
-	snprintf(filename, sizeof(filename), "%s/.Xdefaults", getenv("HOME"));
-	fprintf(stderr, "loading '%s'\n", filename);
-
-	rdb = XrmGetFileDatabase(filename);
+	rdb = XrmGetDatabase(in->display);
 
 	for(int i=0; i<COLOR_AMOUNT; i++) {
 		snprintf(buffer, sizeof(buffer), "color%d", i);
@@ -147,13 +143,18 @@ void init_xft(struct window *win, struct display *in, struct config *cfg) {
 void init_win(struct window *win, struct display *in, struct config *cfg) {
 	XSetWindowAttributes attrs = { ParentRelative, 0L, 0, 0L, 0, 0, Always, 0L, 0L, False, StructureNotifyMask | ExposureMask | KeyPressMask, 0L, True, 0, 0 };
 	XClassHint classhint = { cfg->title, cfg->title };
+	unsigned long valuemask;
+	unsigned int class;
 
 #ifndef ARGB
-	win->window = XCreateWindow(in->display, in->root, cfg->x, cfg->y, cfg->width, cfg->height, 0, in->depth, CopyFromParent, in->visual, CWBackPixmap | CWEventMask, &attrs);
+	class = CopyFromParent;
+	valuemask = CWBackPixmap | CWEventMask;
 #else
 	attrs.colormap = in->colormap;
-	win->window = XCreateWindow(in->display, in->root, cfg->x, cfg->y, cfg->width, cfg->height, 0, in->depth, InputOutput, in->visual, CWBackPixel | CWBorderPixel | CWColormap | CWEventMask, &attrs);
+	class = InputOutput;
+	valuemask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 #endif
+	win->window = XCreateWindow(in->display, in->root, cfg->x, cfg->y, cfg->width, cfg->height, 0, in->depth, class, in->visual, valuemask, &attrs);
 
 	XSetClassHint(in->display, win->window, &classhint);
 	XStoreName(in->display, win->window, cfg->title);
@@ -178,7 +179,7 @@ static int get_argb_visual(struct display *in) {
 
 	for (int i = 0; i < nxvisuals; i++) {
 		if (visual_list[i].depth == 32 &&
-			 (visual_list[i].red_mask   == 0xff0000 &&
+		 (visual_list[i].red_mask   == 0xff0000 &&
 			  visual_list[i].green_mask == 0x00ff00 &&
 			  visual_list[i].blue_mask  == 0x0000ff)) {
 			in->visual = visual_list[i].visual;
@@ -223,7 +224,7 @@ void init_x11colors(struct config *cfg) {
 	init_win(&win, &in, cfg);
 	init_xft(&win, &in, cfg);
 
-	init_xdefaults(cfg);
+	init_xdefaults(&in, cfg);
 	init_colors(&win, &in, cfg);
 
 	loop(&win, &in, cfg);
