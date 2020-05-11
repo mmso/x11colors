@@ -1,7 +1,7 @@
 x11colors displays terminal colors in a transparent X11 window.
 =========
 
-![screenshot](http://github.com/mmso/x11colors/raw/master/x11colors-screenshot.png)
+![screenshot](https://raw.githubusercontent.com/mmso/x11colors/master/x11colors-screenshot.png)
 
 It uses either real transparency with ARGB, or fake transparency with the background as pixmap. x11colors requires libxft for drawing text.
 
